@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Plans</title>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div x-data="pricePlanWidget()">
+        
+       <!-- Display all price plans -->
+       <h2>Price Plans</h2>
+    
+            <ul>
+                <template x-for="plan in pricePlans" :key="plan.plan_name">
+                    <li>
+                        <strong x-text="plan.plan_name"></strong> Call:R<div x-text="plan.call_price"></div>SMS:R<div x-text="plan.sms_price"></div>
+                    </li>
+                </template>
+            </ul>
+            <button @click="togglePricePlans">Available Price Plans</button>    
+
+
+       
+
+        <!-- Calculate total phone bill-->
+        <h2>Calculate Total Phone Bill</h2>
+        <form @submit.prevent="calculateTotalBill">
+            <input type="text" x-model="selectedPlan" placeholder="Plan Name" required>
+            <input type="text" x-model="actions" placeholder="Enter actions (e.g., sms,call,call)" required>
+            <button type="submit">Calculate</button>
+            <div id="calculate-response" x-text="totalBill"></div>
+        </form>
+
+        <!-- Create a new price plan -->
+        <h2>Create Price Plan</h2>
+        <form @submit.prevent="createPricePlan">
+            <input type="text" x-model="newPlan.name" placeholder="Name" required>
+            <input type="number" x-model="newPlan.call_cost" placeholder="Call Cost" required>
+            <input type="number" x-model="newPlan.sms_cost" placeholder="SMS Cost" required>
+            <button type="submit">Create</button>
+        </form>
+    
+        <!-- Update a price plan -->
+        <h2>Update Price Plan</h2>
+        <form @submit.prevent="updatePricePlan">
+            <input type="text" x-model="updatePlan.name" placeholder="Name" required>
+            <input type="number" x-model="updatePlan.call_cost" placeholder="Call Cost" required>
+            <input type="number" x-model="updatePlan.sms_cost" placeholder="SMS Cost" required>
+            <button type="submit">Update</button>
+        </form>
+    
+        <!-- Delete a price plan -->
+        <h2>Delete Price Plan</h2>
+        <form @submit.prevent="deletePricePlan">
+            <input type="text" x-model="deletePlan.name" placeholder="Name" required>
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+    
+    <script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('pricePlanWidget', () => ({
+            pricePlans: {},
+            selectedPlan: '',
+            actions: '',
+            totalBill: '',
+            planTotals: {},  // Track totals for each plan
+            mostSpentPlan: { name: '', total: 0 }, // Most spent plan
+            leastSpentPlan: { name: '', total: 0 }, // Least spent plan
+            newPlan: {
+                name: '',
+                call_cost: '',
+                sms_cost: ''
+            },
+            updatePlan: {
+                name: '',
+                call_cost: '',
+                sms_cost: ''
+            },
+            deletePlan: {
+                name: ''
+            },
+            
+            //toggle the price plan
+            async togglePricePlans() {
+            if (Object.keys(this.pricePlans).length > 0) {
+                this.pricePlans = {}; 
+            } else {
+                await this.getPricePlans(); 
+            }
+        },
+
+            // Fetch all price plans when the button is clicked
+            async getPricePlans() {
+                const response = await fetch('/api/price_plans/');
+                this.pricePlans = await response.json();
+                console.log(this.pricePlans);
+                
+            },
+
+             // Calculate total bill based on selected plan
+             calculateTotalBill() {
+                const plan = this.pricePlans.find(plan => plan.plan_name === this.selectedPlan);
+                if (plan) {
+                    const actionsArray = this.actions.split(',');
+                    let totalCost = 0;
+
+                    actionsArray.forEach(action => {
+                        if (action.trim() === 'call') {
+                            totalCost += plan.call_price;
+                        } else if (action.trim() === 'sms') {
+                            totalCost += plan.sms_price;
+                        }
+                    });
+
+                    this.totalBill = `Total Bill: R${totalCost.toFixed(2)}`;
+                } else {
+                    this.totalBill = 'Price plan not found';
+                }
+            },
+            
+
+            // Validate inputs to ensure no negative values
+            // validateInput(plan) {
+            //     if (plan.call_cost < 0 || plan.sms_cost < 0) {
+            //         alert('Call cost and SMS cost cannot be negative.');
+            //         return false;
+            //     }
+            //     return true;
+            // },
+    
+            // Create a new price plan
+            async createPricePlan() {
+                if (!this.validateInput(this.newPlan)) return;
+
+                const response = await fetch('/api/price_plan/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.newPlan)
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    this.pricePlans[this.newPlan.name] = this.newPlan;
+                    this.newPlan = { name: '', call_cost: '', sms_cost: '' }; // Reset form
+                } else {
+                    alert(data.error);
+                }
+            },
+    
+            // Update an existing price plan
+            async updatePricePlan() {
+                if (!this.validateInput(this.updatePlan)) return;
+
+                const response = await fetch('/api/price_plan/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.updatePlan)
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    this.pricePlans[this.updatePlan.name] = this.updatePlan;
+                    this.updatePlan = { name: '', call_cost: '', sms_cost: '' }; // Reset form
+                } else {
+                    alert(data.error);
+                }
+            },
+    
+            // Delete a price plan
+            async deletePricePlan() {
+                const response = await fetch('/api/price_plan/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.deletePlan)
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    delete this.pricePlans[this.deletePlan.name];
+                    this.deletePlan.name = ''; // Reset form
+                } else {
+                    alert(data.error);
+                }
+            },
+         }));
+    });
+    </script>
+</body>
+</html>

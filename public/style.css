@@ -1,0 +1,102 @@
+
+body {
+    font-family: 'Verdana', sans-serif;
+    background-color: rgb(94, 15, 58);
+    /* color: #e0e0e0; */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content:center;
+    align-items: flex-start; /* Adjusted from center to prevent cutting off */
+    min-height: 100vh;
+    text-align: center;
+}
+
+h2 {
+    color: #db95ec;
+    margin-bottom: 20px;
+    font-size: 1.7em;
+    border-bottom: 1px solid #e0a1dd;
+    padding-bottom: 5px;
+    font-weight: 600;
+}
+
+/* List of Price Plans */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+    width: 100%; 
+    max-width: 500px; 
+}
+
+li {
+    background-color: #e0a1dd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s;
+    word-wrap: break-word; 
+}
+
+li:hover {
+    transform: scale(1.02);
+}
+
+li strong {
+    color: black;
+    font-size: 1.1em;
+}
+
+li span {
+    color: #e0afca;
+}
+
+/* Forms */
+form {
+    background-color: rgb(167, 75, 128);
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(219, 155, 192, 0.6);
+    transition: background-color 0.3s;
+    width: 100%; /* Ensure the form doesn't overflow */
+    max-width: 500px;
+    color: aqua;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #e0afca;
+    border: 1px solid palevioletred;
+    border-radius: 6px;
+    color: black;
+    font-size: 1em;
+}
+
+input[type="text"]::placeholder,
+input[type="number"]::placeholder {
+    color: purple;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #e0afca;
+    border: none;
+    border-radius: 6px;
+    color: #181818;
+    font-size: 1.1em;
+    cursor: pointer;
+    font-weight: bold;
+}
+template{
+    color: #181818;
+}
+
