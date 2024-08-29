@@ -124,13 +124,13 @@
             
 
             // Validate inputs to ensure no negative values
-            // validateInput(plan) {
-            //     if (plan.call_cost < 0 || plan.sms_cost < 0) {
-            //         alert('Call cost and SMS cost cannot be negative.');
-            //         return false;
-            //     }
-            //     return true;
-            // },
+            validateInput(plan) {
+                if (plan.call_cost < 0 || plan.sms_cost < 0) {
+                    alert('Call cost and SMS cost cannot be negative.');
+                    return false;
+                }
+                return true;
+            },
     
             // Create a new price plan
             async createPricePlan() {
