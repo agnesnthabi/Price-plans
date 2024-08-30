@@ -101,8 +101,6 @@
                     try {
                         const response = await fetch('/api/price_plans/');
                         const data = await response.json();
-
-                        // Ensure the response is an array
                         if (Array.isArray(data)) {
                             this.pricePlans = data.map(plan => ({
                                 ...plan,
@@ -111,11 +109,11 @@
                             console.log('Price plans loaded:', this.pricePlans);
                         } else {
                             console.error('Unexpected data format:', data);
-                            this.pricePlans = []; // Reset to avoid errors in x-for
+                            this.pricePlans = []; 
                         }
                     } catch (error) {
                         console.error('Failed to fetch price plans:', error);
-                        this.pricePlans = []; // Reset to avoid errors in x-for
+                        this.pricePlans = []; 
                     }
                 },
 
