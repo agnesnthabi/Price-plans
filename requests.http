@@ -34,6 +34,6 @@ POST http://localhost:4011/api/price_plan/delete
 Content-Type: application/json
 
 {
-    "name": "sms 101"
+    "name": "Call-101"
 }
 

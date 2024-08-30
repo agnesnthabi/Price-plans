@@ -65,7 +65,7 @@ form {
     transition: background-color 0.3s;
     width: 100%; /* Ensure the form doesn't overflow */
     max-width: 500px;
-    color: aqua;
+    color: green;
 }
 
 input[type="text"],
@@ -99,4 +99,8 @@ button {
 template{
     color: #181818;
 }
+.amount {
+    color: black; /* Choose any color you like */
+}
+
 

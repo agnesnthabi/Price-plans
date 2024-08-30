@@ -1,4 +1,4 @@
-function totalPhoneBill(bills) {
+export default function totalPhoneBill(bills) {
     const billList = bills.split(', ');
      console.log(billList);
      const call = 2.75;
